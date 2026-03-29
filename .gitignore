@@ -23,6 +23,8 @@
 # misc
 .DS_Store
 *.pem
+Thumbs.db
+
 
 # debug
 npm-debug.log*
@@ -32,9 +34,21 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+
+# File yang Abang minta
+todo.md
 
 # vercel
 .vercel
+
+# Editor Settings 
+.vscode/
+.idea/
 
 # typescript
 *.tsbuildinfo
