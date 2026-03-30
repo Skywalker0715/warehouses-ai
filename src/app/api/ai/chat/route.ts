@@ -82,7 +82,7 @@ ${finalContext}
 
 PERTANYAAN USER:
 ${message}
-    `;
+    `.trim();
 
     const result = await chat.sendMessage(promptWithContext);
     const response = await result.response;
@@ -104,7 +104,26 @@ ${message}
 
   } catch (error: any) {
     console.error("[ai][chat] Error:", error);
-    const isQuota = error.message?.includes("429");
+    
+    // Handle Quota Exceeded (429) gracefully
+    if (error.message?.includes("429") || error.status === 429) {
+      return NextResponse.json({
+        success: true,
+        is_mock: true,
+        data: {
+          id: Date.now().toString(),
+          role: "assistant",
+          content: "Maaf bang, kuota harian AI saya lagi habis nih. 😅 \n\nSaran saya: Cek stok manual dulu di dashboard atau tunggu sampai kuota di-reset (biasanya jam 2 siang WIB).",
+          created_at: new Date().toISOString(),
+        },
+        meta: {
+          context_tokens: 0,
+          model: "quota-exceeded-fallback"
+        }
+      });
+    }
+
+    const isQuota = error.message?.includes("429") || error.status === 429;
     return NextResponse.json({ 
       error: isQuota ? "Batas kuota AI harian tercapai." : "Gagal memproses pesan AI" 
     }, { status: 500 });
