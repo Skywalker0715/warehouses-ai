@@ -52,7 +52,7 @@ graph LR
 | **Frontend** | React 19, Next.js 15 (App Router), Tailwind CSS, Shadcn UI |
 | **Backend** | Node.js Runtime, Next.js API Handlers, JWT Authentication |
 | **Database** | Neon Postgres (Serverless DB), SQL Parameterized Queries |
-| **Artificial Intelligence** | Google Generative AI (Gemini 2.0 Flash) |
+| **Artificial Intelligence** | Google Generative AI (Gemini 2.5 Flash) |
 | **Utility** | Lucide React, Zod (Validation), Server-Only |
 
 ## 💻 Langkah Instalasi
