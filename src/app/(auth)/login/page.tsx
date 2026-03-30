@@ -14,9 +14,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export const dynamic = 'force-dynamic';
-
-
 type FormState = {
   email: string;
   password: string;
@@ -28,6 +25,8 @@ const initialState: FormState = {
   email: "",
   password: "",
 };
+
+export const dynamic = 'force-dynamic';
 
 export default function LoginPage() {
   const router = useRouter();
