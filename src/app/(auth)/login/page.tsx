@@ -14,6 +14,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+export const dynamic = 'force-dynamic';
+
+
 type FormState = {
   email: string;
   password: string;
