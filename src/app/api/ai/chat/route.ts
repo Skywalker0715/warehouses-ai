@@ -7,6 +7,10 @@ import { buildFullContext } from "@/lib/ai/context-builder";
 import { sanitizeForAI, truncateContext } from "@/lib/ai/sanitize";
 import { AI_MODELS, isAIConfigured } from "@/lib/ai";
 
+// Simple cache untuk menghemat kuota Gemini 2.5 Flash yang ketat (20 req/day)
+const chatCache = new Map<string, { response: any; timestamp: number }>();
+const CACHE_TTL = 10 * 60 * 1000; // Cache 10 menit
+
 export async function POST(req: NextRequest) {
   try {
     if (!isAIConfigured()) {
@@ -30,6 +34,14 @@ export async function POST(req: NextRequest) {
 
     // 2. Parse Request
     const { message, history } = await req.json();
+
+    // 2.1 Check Cache (Key based on userId and last message)
+    const cacheKey = `${userId}-${message.trim().toLowerCase()}`;
+    const cached = chatCache.get(cacheKey);
+    
+    if (cached && (Date.now() - cached.timestamp < CACHE_TTL)) {
+      return NextResponse.json(cached.response);
+    }
 
     // Ambil keyword pencarian (kata terakhir atau kata benda)
     // Sederhananya, kita kirim seluruh pesan user sebagai filter
@@ -88,7 +100,7 @@ ${message}
     const response = await result.response;
     const text = response.text();
 
-    return NextResponse.json({
+    const finalResponse = {
       success: true,
       data: {
         id: Date.now().toString(),
@@ -100,7 +112,12 @@ ${message}
         context_tokens: Math.ceil(finalContext.length / 4),
         model: AI_MODELS.FAST
       }
-    });
+    };
+
+    // Save to cache
+    chatCache.set(cacheKey, { response: finalResponse, timestamp: Date.now() });
+
+    return NextResponse.json(finalResponse);
 
   } catch (error: any) {
     console.error("[ai][chat] Error:", error);
