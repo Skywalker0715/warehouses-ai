@@ -93,14 +93,11 @@ function LoginForm() {
         return;
       }
 
-      if (data?.token) {
-        localStorage.setItem("token", data.token);
-      }
-
       toast({
         title: "Login berhasil",
         description: "Selamat datang kembali!",
       });
+      router.refresh(); // Pastikan server sadar cookie sudah ada
       router.push(safeRedirect);
     } catch {
       toast({
