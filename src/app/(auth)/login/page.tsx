@@ -32,8 +32,8 @@ function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/dashboard";
-  const safeRedirect = redirectTo.startsWith("/") ? redirectTo : "/dashboard";
+  const redirectParam = searchParams.get("redirectTo");
+  const redirectTo = (redirectParam && redirectParam.startsWith("/")) ? redirectParam : "/dashboard";
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
@@ -97,8 +97,8 @@ function LoginForm() {
         title: "Login berhasil",
         description: "Selamat datang kembali!",
       });
-      router.refresh(); // Pastikan server sadar cookie sudah ada
-      router.push(safeRedirect);
+      router.refresh();
+      router.replace(redirectTo);
     } catch {
       toast({
         title: "Login gagal",
